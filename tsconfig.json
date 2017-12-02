@@ -1,9 +1,4 @@
 {
-  "compilerOptions": {
-    "declaration": true,
-    "module": "es6",
-    "target": "ES6"
-  },
   "files": [
     "diff.ts",
     "equal.ts",
