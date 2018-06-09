@@ -4,6 +4,7 @@ errors.ts
 index.ts
 patch.ts
 pointer.ts
+scim.pointer.ts
 .travis.yml
 Makefile
 tsconfig.json

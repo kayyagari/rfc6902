@@ -1,7 +1,10 @@
 BIN := node_modules/.bin
 TYPESCRIPT := $(shell jq -r '.files[]' tsconfig.json | grep -Fv .d.ts)
 
-all: $(TYPESCRIPT:%.ts=%.js) $(TYPESCRIPT:%.ts=%.d.ts) rfc6902.js rfc6902.min.js .npmignore .gitignore
+all: clean $(TYPESCRIPT:%.ts=%.js) $(TYPESCRIPT:%.ts=%.d.ts) scim-rfc6902.js scim-rfc6902.min.js .npmignore .gitignore
+
+clean:
+	rm *.js
 
 $(BIN)/browserify $(BIN)/mocha $(BIN)/tsc $(BIN)/istanbul $(BIN)/_mocha $(BIN)/coveralls:
 	npm install
@@ -15,11 +18,11 @@ $(BIN)/browserify $(BIN)/mocha $(BIN)/tsc $(BIN)/istanbul $(BIN)/_mocha $(BIN)/c
 %.js %.d.ts: %.ts $(BIN)/tsc
 	$(BIN)/tsc
 
-rfc6902.js: index.js diff.js equal.js errors.js patch.js pointer.js package.json $(BIN)/browserify
-	$(BIN)/browserify $< --transform babelify --plugin derequire/plugin --standalone rfc6902 --outfile $@
+scim-rfc6902.js: index.js diff.js equal.js errors.js patch.js pointer.js package.json $(BIN)/browserify
+	$(BIN)/browserify $< --transform babelify --plugin derequire/plugin --standalone scim-rfc6902 --outfile $@
 
 %.min.js: %.js
-	closure-compiler --language_in ECMASCRIPT5 --warning_level QUIET $< >$@
+	google-closure-compiler-js --languageIn ECMASCRIPT5 --warningLevel QUIET $< >$@
 
 test: $(TYPESCRIPT:%.ts=%.js) $(BIN)/istanbul $(BIN)/_mocha $(BIN)/coveralls
 	$(BIN)/istanbul cover $(BIN)/_mocha -- tests/ --compilers js:babel-core/register -R spec

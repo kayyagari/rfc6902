@@ -19,7 +19,15 @@ I say "lower order" because '/' needs escaping due to the JSON Pointer serializa
 Whereas, '~' is escaped because escaping '/' uses the '~' character.
 */
 function unescape(token: string): string {
-  return token.replace(/~1/g, '/').replace(/~0/g, '~');
+  return token.replace(/~1/g, '/').replace(/~0/g, '~')
+}
+
+// custom interface from Sparrow
+export interface ResourceType {
+  schemas: any;
+  isComplexMultiValAt: any;
+  getAt: any;
+  createPathExpr: any;
 }
 
 /** Escape token part of a JSON Pointer string
@@ -31,30 +39,36 @@ function unescape(token: string): string {
 This is the exact inverse of `unescape()`, so the reverse replacements must take place in reverse order.
 */
 function escape(token: string): string {
-  return token.replace(/~/g, '~0').replace(/\//g, '~1');
+  return token.replace(/~/g, '~0').replace(/\//g, '~1')
 }
 
 export interface PointerEvaluation {
-  parent: any;
-  key: string;
-  value: any;
+  parent: any
+  key: string
+  value: any
 }
 
 /**
 JSON Pointer representation
 */
 export class Pointer {
+  // below two fields are only applicable for ScimPointer but added here to minimize changes in all the function signatures
+  /** the attribute that is being diffed at the moment */
+  public curAt: string = ''
+  /** the resourcetype of objects */
+  public rt: ResourceType = null
+
   constructor(public tokens = ['']) { }
   /**
   `path` *must* be a properly escaped string.
   */
   static fromJSON(path: string): Pointer {
-    var tokens = path.split('/').map(unescape);
-    if (tokens[0] !== '') throw new Error(`Invalid JSON Pointer: ${path}`);
-    return new Pointer(tokens);
+    var tokens = path.split('/').map(unescape)
+    if (tokens[0] !== '') throw new Error(`Invalid JSON Pointer: ${path}`)
+    return new Pointer(tokens)
   }
   toString(): string {
-    return this.tokens.map(escape).join('/');
+    return this.tokens.map(escape).join('/')
   }
   /**
   Returns an object with 'parent', 'key', and 'value' properties.
@@ -62,23 +76,31 @@ export class Pointer {
   Otherwise, parent will be the such that `parent[key] == value`
   */
   evaluate(object: any): PointerEvaluation {
-    var parent: any = null;
-    var token: string = null;
+    var parent: any = null
+    var token: string = null
     for (var i = 1, l = this.tokens.length; i < l; i++) {
-      parent = object;
-      token = this.tokens[i];
+      parent = object
+      token = this.tokens[i]
       // not sure if this the best way to handle non-existant paths...
-      object = (parent || {})[token];
+      object = (parent || {})[token]
     }
-    return {
-      parent: parent,
-      key: token,
-      value: object,
-    };
+    return {parent, key: token, value: object}
+  }
+  get(object: any): any {
+    return this.evaluate(object).value
+  }
+  set(object: any, value: any): void {
+    for (var i = 1, l = this.tokens.length - 1, token = this.tokens[i]; i < l; i++) {
+      // not sure if this the best way to handle non-existant paths...
+      object = (object || {})[token]
+    }
+    if (object) {
+      object[this.tokens[this.tokens.length - 1]] = value
+    }
   }
   push(token: string): void {
     // mutable
-    this.tokens.push(token);
+    this.tokens.push(token)
   }
   /**
   `token` should be a String. It'll be coerced to one anyway.
@@ -86,7 +108,7 @@ export class Pointer {
   immutable (shallowly)
   */
   add(token: string): Pointer {
-    var tokens = this.tokens.concat(String(token));
-    return new Pointer(tokens);
+    var tokens = this.tokens.concat(String(token))
+    return new Pointer(tokens)
   }
 }

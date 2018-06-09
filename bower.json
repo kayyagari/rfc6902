@@ -1,7 +1,7 @@
 {
   "name": "rfc6902",
   "description": "Complete implementation of RFC6902 (patch and diff)",
-  "main": "./rfc6902.js",
+  "main": "./dist/rfc6902.js",
   "authors": [
     "Christopher Brown <io@henrian.com> (http://henrian.com)"
   ],
@@ -10,9 +10,10 @@
     "json",
     "patch",
     "diff",
-    "rfc6902"
+    "rfc6902",
+    "scim"
   ],
-  "homepage": "https://github.com/chbrown/rfc6902",
+  "homepage": "https://github.com/kayyagari/rfc6902",
   "moduleType": [
     "amd",
     "es6",
