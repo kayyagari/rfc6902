@@ -8,5 +8,6 @@ scim.pointer.ts
 .travis.yml
 Makefile
 tsconfig.json
+dist/
 tests/
 coverage/
