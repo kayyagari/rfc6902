@@ -248,10 +248,15 @@ export function diffArrays<T>(input: T[], output: T[], ptr: Pointer, buildPathFi
       }
 
       if (isArrayRemove(array_operation)) {
+        let remove_ptr = ptr
+        if (filter != '') {
+          remove_ptr = ptr.add(filter);
+        }
+
         const operation = {
           op: array_operation.op,
           //path: ptr.add(String(array_operation.index + padding)).toString(),
-          path: ptr.toString(),
+          path: remove_ptr.toString(),
         }
         // padding--; //this is from original rfc6902 source, not commented by kiran
         return [operations.concat(operation), padding - 1]
