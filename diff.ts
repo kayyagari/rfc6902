@@ -290,7 +290,10 @@ export function diffObjects(input: any, output: any, ptr: Pointer): Operation[] 
   })
   // if a key is in both, diff it recursively
   intersection([input, output]).forEach(key => {
-    let buildPathFilter = ptr.rt.isComplexMultiValAt(key)
+    let buildPathFilter = false;
+    if(ptr.rt !== null) {
+      buildPathFilter = ptr.rt.isComplexMultiValAt(key)
+    }
     operations.push(...diffAny(input[key], output[key], ptr.add(key), buildPathFilter));
   })
   return operations
