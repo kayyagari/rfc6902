@@ -14,7 +14,8 @@
     "type": "git",
     "url": "https://github.com/kayyagari/rfc6902.git"
   },
-  "author": "Kiran Ayyagari <kayyagari@keydap.com> (http://keydap.com)",
+  "author": "Christopher Brown <io@henrian.com> (http://henrian.com)",
+  "scimSupportAuthor": "Kiran Ayyagari <kayyagari@keydap.com> (http://keydap.com)",
   "license": "MIT",
   "main": "./scim-rfc6902.js",
   "devDependencies": {
